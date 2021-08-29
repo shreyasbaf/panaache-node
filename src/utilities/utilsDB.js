@@ -10,13 +10,11 @@ class UtilsDB {
       database: 'u386445862_panaache'
     });
   }
-    
   // async getItems(category) {
   //   let sql = `Select * from items where category = "${category}"`;
   //   let res = await mysql.query(sql);
   //   return (res[0].length ? res[0] : null);
   // }
-
   async getItems(category) {
     let i;
     let cat = category.split(',');
