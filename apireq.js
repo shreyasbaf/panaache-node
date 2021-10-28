@@ -9,6 +9,14 @@ const login = new Login();
 express.urlencoded({ extended: false });
 express.json({ extended: false });
 
+//Mango DB
+
+const { MongoClient } = require('mongodb');
+// const uri = "mongodb+srv://shreyas7b:Shreyas%401997@cluster0.tbp61.mongodb.net/demodb?retryWrites=true&w=majority";
+const uri = process.env.MONGODB_URI || "mongodb+srv://shreyas7b:Shreyas%401997@cluster0.tbp61.mongodb.net/demodb?retryWrites=true&w=majority";
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+
+//Mango DB
 app.use(Cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(function(req, res, next) {
@@ -226,6 +234,26 @@ app.get('/orders', async function(req,res){
 app.get('/orders/:id', async function(req,res){
   let result = await endpoint.getOrder(req.params.id);
   res.send(result)
+})
+
+app.get('/mgusers', async function(req,res){
+  client.connect(err => {
+    //   const collection = client.db("test").collection("devices");
+      // perform actions on the collection object
+      var dbo = client.db("demodb");
+    //   dbo.collection("users").findOne({}, function(err, result) {
+      dbo.collection("users").find({},{projection: { _id : 0}}).toArray(function(err, result) {
+      // dbo.collection("users").find(query).toArray(function(err, result) {
+        if (err) throw err;
+        result.forEach(element => {
+            // console.log(element);
+        });
+        res.send(result)
+        client.close();
+
+      });
+
+    });
 })
 
 app.listen(process.env.PORT || 8080);
