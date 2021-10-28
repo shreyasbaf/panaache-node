@@ -39,13 +39,19 @@ class Utils {
     return detail;
   }
 
-  async getPrice(id, quality, color, size, metal = 'default') {
+  async getPrice(id, quality, color, size, metal = 'default',plmetal = 'default') {
     let purity = {
       'DEFAULT': 0.77,
       'WHITE GOLD': 0.77,
       'ROSE GOLD': 0.76,
       'YELLOW GOLD': 0.76
     };
+    let platinum_purity = {
+      'DEFAULT': 0.95,
+      'A' : 0.95,
+      'B' : 0.90,
+      'C' : 0.92
+    }
     // if(metal == null){metal = 'default'}
     let liveRate = await utilsDB.getGoldLiveRate();
     let diamond_cost = 0;
@@ -72,6 +78,8 @@ class Utils {
       return details;
     }) || []);
 
+    let platinum_rates = result.platinum_details;
+    console.log(platinum_rates);
     let gold_rates = result.gold_details.length && await this.getGoldRates(result.gold_details.length && result.gold_details, size) || { size: 'default', weight: result.gold_wt, price: (result.gold_wt * purity[metal.toUpperCase()] * liveRate) / 0.995 };
     let gold_rate = gold_rates.price; // result['gold_details'][x].price //(result.gold_wt*0.77*5000)/0.995 //Gold Rates
     let making_charges = gold_rates.weight * 900;
@@ -115,6 +123,7 @@ class Utils {
       item_temp.image_link = JSON.parse(item_temp.image_link);
       item_temp.item_details = JSON.parse(item_temp.item_details);
       item_temp.gold_details = JSON.parse(item_temp.gold_details);
+      item_temp.platinum_details = JSON.parse(item_temp.platinum_details);
       newBody.push(item_temp);
     });
     return newBody;
@@ -205,5 +214,23 @@ class Utils {
     let result = await utilsDB.getItemInfo(id);
     return result;
   }
+
+  async getUsers(){
+    let result = await utilsDB.getUsers();
+    return result;
+  }
+  async getUser(id){
+    let result = await utilsDB.getUser(id);
+    return result;
+  }
+  async getOrders(){
+    let result = await utilsDB.getOrders();
+    return result;
+  }
+  async getOrder(id){
+    let result = await utilsDB.getOrder(id);
+    return result;
+  }
+
 }
 module.exports = Utils;

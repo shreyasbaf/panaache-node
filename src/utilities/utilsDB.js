@@ -19,10 +19,12 @@ class UtilsDB {
     let i;
     let cat = category.split(',');
     let sql1 = `${cat[0]} = 1`;
+    console.log(sql1);
     for (i = 1; i < cat.length; i++) {
       sql1 = sql1.concat(` and ${cat[i]} = 1`);
     }
     let sql = `Select * from items where id in(select item_id from categories where ${sql1})`;
+    console.log(sql);
     let res = await mysql.query(sql);
     return (res[0].length ? res[0] : null);
   }
@@ -125,6 +127,37 @@ class UtilsDB {
     let sql = `Delete from users_cart where cart_id = '${id}' and user_email = "${email}"`;
     await mysql.query(sql);
     return this.viewCart(email);
+  }
+
+  async getUsers(){
+    let sql = `select * from users`;
+    let result = await mysql.query(sql)
+    return (result[0].length ? result[0] : null);
+  }
+
+  async getUser(id){
+    let sql = `select * from users where id = '${id}'`;
+    let result = await mysql.query(sql)
+    return (result[0].length ? result[0][0] : null);
+  }
+
+  async getOrders(){
+    let sql = `select * from order_summary`;
+    let result = await mysql.query(sql)
+    return (result[0].length ? result[0] : null);
+  }
+
+  async getOrder(id){
+    let sql = `select * from order_summary where id = '${id}'`;
+    let result = await mysql.query(sql)
+    let res = result[0][0] 
+    let res1 = {
+      ...res,
+      order_det: JSON.parse(res.order_details)
+    }
+    console.log(result[0][0])
+    return res1
+    // return (result[0].length ? result[0][0] : null);
   }
 }
 module.exports = UtilsDB;

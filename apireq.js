@@ -208,4 +208,24 @@ app.post('/paymentdetails', async function(req, res) {
   }
 });
 
+app.get('/users', async function(req,res){
+  let result = await endpoint.getUsers();
+  res.send(result)
+})
+
+app.get('/users/:id', async function(req,res){
+  let result = await endpoint.getUser(req.params.id);
+  res.send(result)
+})
+
+app.get('/orders', async function(req,res){
+  let result = await endpoint.getOrders();
+  res.send(result)
+})
+
+app.get('/orders/:id', async function(req,res){
+  let result = await endpoint.getOrder(req.params.id);
+  res.send(result)
+})
+
 app.listen(8080);
